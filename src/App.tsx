@@ -4,7 +4,7 @@ import Game from './Components/Game';
 
 const App: React.FC = () => {
 
-  const [gameIsOver, setGameIsOver] = useState(true)
+  const [gameIsOver, setGameIsOver] = useState(false)
 
   function startGame() {
     setGameIsOver(false)
