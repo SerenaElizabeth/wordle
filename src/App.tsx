@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import './App.css';
 import Game from './Components/Game';
 
-export interface WordObj {
-  wordArray:string[]
+export interface Data {
+  wordArray:string[],
+  gameIsOver:boolean,
+  setGameOver: (gameIsOver:boolean)=> void
 }
 
 
@@ -13,19 +15,21 @@ const App: React.FC = () => {
 
   function startGame() {
     setGameIsOver(false)
-
   }
 
   const wordList = ["funky", "mouse", "plant", "crime", "night"];
-  let newWordArray:WordObj = {
-      wordArray: Array.from(wordList[Math.floor(Math.random() * wordList.length)]) //gets random word, creates array from letters
+  let newData:Data = {
+      wordArray: Array.from(wordList[Math.floor(Math.random() * wordList.length)]), //gets random word, creates array from letters
+      gameIsOver:false,
+      setGameOver: (gameIsOver)=> setGameIsOver(!gameIsOver)
     }
 
 
   return (
     <div className="App">
-      {gameIsOver && <button onClick={startGame}>Start Game</button>}
-      {!gameIsOver && <Game wordArray={newWordArray.wordArray} />}
+      {gameIsOver && <button onClick={startGame}>Start Again</button>}
+
+      <Game gameIsOver={gameIsOver} setGameOver = {newData.setGameOver} wordArray={newData.wordArray} />
 
     </div>
   );

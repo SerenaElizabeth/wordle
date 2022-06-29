@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import Keyboard from '../Keyboard';
-import { WordObj } from "../../App"
+import { Data } from "../../App"
 
 
-const Game: React.FC<WordObj> = ({wordArray}) => {
+const Game: React.FC<Data> = ({wordArray, setGameOver, gameIsOver}) => {
 
     
     //create grid state
@@ -28,6 +28,7 @@ const Game: React.FC<WordObj> = ({wordArray}) => {
                 console.log("you won")
 
                 //TODO: change game over to true 
+                setGameOver(gameIsOver)
             }
 
             
