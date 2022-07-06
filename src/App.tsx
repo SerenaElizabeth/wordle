@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
+import { convertCompilerOptionsFromJson } from 'typescript';
 import './App.css';
 import Game from './Components/Game';
+import Keyboard from './Components/Keyboard';
 
-export interface Data {
+export interface IGameProps {
   wordArray:string[],
   gameIsOver:boolean,
   setGameOver: (gameIsOver:boolean)=> void
+}
+
+export interface IKeyboardProps {
+  handleClick:(letter:string)=>void
 }
 
 
@@ -18,10 +24,13 @@ const App: React.FC = () => {
   }
 
   const wordList = ["funky", "mouse", "plant", "crime", "night"];
-  let newData:Data = {
+  let gameProps:IGameProps = {
       wordArray: Array.from(wordList[Math.floor(Math.random() * wordList.length)]), //gets random word, creates array from letters
       gameIsOver:false,
-      setGameOver: (gameIsOver)=> setGameIsOver(!gameIsOver)
+      setGameOver: (gameIsOver)=> setGameIsOver(!gameIsOver),
+    }
+    let keyboardProps:IKeyboardProps = {
+     handleClick:(letter)=>console.log(letter) //TODO: update newArray with the letter that has been clicked on
     }
 
 
@@ -29,7 +38,9 @@ const App: React.FC = () => {
     <div className="App">
       {gameIsOver && <button onClick={startGame}>Start Again</button>}
 
-      <Game gameIsOver={gameIsOver} setGameOver = {newData.setGameOver} wordArray={newData.wordArray} />
+      <Game gameIsOver={gameIsOver} setGameOver = {gameProps.setGameOver} wordArray={gameProps.wordArray} />
+      <Keyboard handleClick={keyboardProps.handleClick}/>
+
 
     </div>
   );
