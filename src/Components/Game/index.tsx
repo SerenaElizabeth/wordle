@@ -1,21 +1,50 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { IGameProps } from "../../App"
 
 
-const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
 
-    //create grid state
+const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
     
     const [grid, setGrid] = useState([[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}],[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}] ,[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}] ,[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}] ,[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}] ])
     
-    
-    // create copy of grid to be updated after letter input
+    const [rowNumber, setRowNumber] = useState(0)
+    const [rowComplete, setRowComplete] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("")
     
     const newArray = JSON.parse(JSON.stringify(grid));
 
+    //when word is submitted 
 
-    function handleLetterInput(rowIndex: number, boxIndex: number,value:string) {
+    async function handleEnter(e: React.KeyboardEvent){
         
+        if( e.key === 'Enter' ){
+           
+            let guess = newArray[rowNumber].map((obj:{letter:string; color:string})=>obj.letter).join('')
+            if (guess.length===5){
+                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${guess}`)
+                console.log(response)
+                if(response.ok){
+                    setGrid(newArray)
+                    setRowComplete(true)
+                    let currentRowNumber = rowNumber+1
+                    setRowNumber(currentRowNumber)
+                    setErrorMessage("")
+                    //TODO: disable current row
+                    //TODO: move focus to next row
+                    
+
+                } else {
+                   setErrorMessage("invalid Word")
+                }
+            }
+
+          }
+    }
+
+    console.log("render")
+    
+    async function handleLetterInput(rowIndex: number, boxIndex: number,value:string) {
+        //on every letter entered, update newArray
         
         newArray[rowIndex].splice(boxIndex, 1, {letter:value, color:"grey"}) //in the new array replace the changed value to include the letter & change color to grey
         
@@ -44,20 +73,21 @@ const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
         
         //if on final letter, update grid to trigger re-render with new color classes
         
-        if(boxIndex===4){
+        if (value.length>=1 && boxIndex!==4){
+            //disable current input box
+            const currentInput = document.querySelector(
+                `input[data-row='${rowIndex.toString()}'][data-box='${boxIndex}']`) as HTMLInputElement;
+            // currentInput.disabled=true
 
-            //TODO:  first check if work entered is a valid word? use dictionary API
-            setGrid(newArray)
-        }
-        
-        if (value.length>=1){
-            if (boxIndex===4){
-                boxIndex=0
-                rowIndex=rowIndex+1
-            } else {
-                boxIndex=boxIndex+1
-                rowIndex=rowIndex
-            }
+            // if (boxIndex<=4){
+            //     boxIndex=0
+            //     rowIndex++
+            // } else {
+            //     boxIndex=boxIndex+1
+            //     rowIndex=rowIndex
+            // }
+
+            boxIndex++
 
             const nextSibling = document.querySelector(
                 `input[data-row='${rowIndex.toString()}'][data-box='${boxIndex}']`) as HTMLElement | null;
@@ -66,16 +96,20 @@ const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
               }
         }
     }
+
+ 
     
     
+    console.log(grid)    
 
     return (
         <>
             {grid.map((row, rowIndex) => (
                 <div key={rowIndex} className="row">{row.map((box, boxIndex) => (
-                    <input data-row={rowIndex} data-box={boxIndex} key={boxIndex} className={"box " + box.color} type="text" onChange={(e) => handleLetterInput(rowIndex, boxIndex, e.target.value)} />
+                    <input data-row={rowIndex} data-box={boxIndex} key={boxIndex} className={"box " + box.color} type="text" onChange={(e) => handleLetterInput(rowIndex, boxIndex, e.target.value)} onKeyPress={handleEnter} />
                 ))}</div>
-            ))}
+                ))}
+                <h2>{errorMessage && errorMessage}</h2>
         </>
     )
 }
