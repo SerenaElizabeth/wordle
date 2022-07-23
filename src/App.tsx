@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { convertCompilerOptionsFromJson } from 'typescript';
 import './App.css';
 import Game from './Components/Game';
-import Keyboard from './Components/Keyboard';
 
 export interface IGameProps {
   wordArray:string[],
@@ -10,9 +9,6 @@ export interface IGameProps {
   setGameOver: (gameIsOver:boolean)=> void
 }
 
-export interface IKeyboardProps {
-  handleClick:(letter:string)=>void
-}
 
 
 const App: React.FC = () => {
@@ -29,9 +25,7 @@ const App: React.FC = () => {
       gameIsOver:false,
       setGameOver: (gameIsOver)=> setGameIsOver(!gameIsOver),
     }
-    let keyboardProps:IKeyboardProps = {
-     handleClick:(letter)=>console.log(letter) //TODO: update newArray with the letter that has been clicked on
-    }
+    
 
 
   return (
@@ -39,7 +33,6 @@ const App: React.FC = () => {
       {gameIsOver && <button onClick={startGame}>Start Again</button>}
 
       <Game gameIsOver={gameIsOver} setGameOver = {gameProps.setGameOver} wordArray={gameProps.wordArray} />
-      <Keyboard handleClick={keyboardProps.handleClick}/>
 
 
     </div>
