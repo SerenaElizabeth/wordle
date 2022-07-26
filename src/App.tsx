@@ -15,22 +15,20 @@ const App: React.FC = () => {
   
   const [gameIsOver, setGameIsOver] = useState(false)
 
-  function startGame() {
-    setGameIsOver(false)
-  }
+
 
   const wordList = ["funky", "mouse", "plant", "crime", "night"];
   let gameProps:IGameProps = {
       wordArray: Array.from(wordList[Math.floor(Math.random() * wordList.length)]), //gets random word, creates array from letters
       gameIsOver:false,
-      setGameOver: (gameIsOver)=> setGameIsOver(!gameIsOver),
+      setGameOver: (gameOver)=> setGameIsOver(gameOver),
     }
     
 
 
   return (
     <div className="App">
-      {gameIsOver && <button onClick={startGame}>Start Again</button>}
+      {gameIsOver && <button onClick={()=>setGameIsOver(false)}>Start Again</button>}
 
       <Game gameIsOver={gameIsOver} setGameOver = {gameProps.setGameOver} wordArray={gameProps.wordArray} />
 

@@ -17,14 +17,14 @@
   margin: 5px;
 }
 
-[data-completed="completed"].yellow{
+.yellow{
   background-color: yellow;
 }
 
-[data-completed="completed"].green{
+.green{
   background-color: green;
 }
 
-[data-completed="completed"].grey{
+.grey{
   background-color: grey;
 }
