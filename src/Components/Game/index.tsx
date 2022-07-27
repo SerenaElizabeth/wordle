@@ -7,8 +7,9 @@ export interface IKeyboardProps {
     handleLetterClick:(letter:string)=>void
   }
 
-const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
+const Game: React.FC<IGameProps> = ({wordArray}) => {
 
+    const [gameIsOver, setGameIsOver] = useState(false)
 
     async function handleEnterClick(){
         //create array from guessed word
@@ -32,7 +33,7 @@ const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
         //check if game is won
 
         if (grid[rowNumber].rowArray.every(ob=>ob.color === 'green')){
-            setGameOver(true)
+            setGameIsOver(true)
             console.log('game over')
             console.log(gameIsOver)
             setErrorMessage('you have won')
@@ -43,7 +44,9 @@ const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
 
     console.log(wordArray)
 
-      const [grid, setGrid] = useState([{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]}])
+        const startingGrid = [{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]}]
+
+      const [grid, setGrid] = useState(startingGrid)
       
       const [rowNumber, setRowNumber] = useState(0)
       const [boxNumber, setBoxNumber] = useState(0)
@@ -90,6 +93,14 @@ const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
 
             
     }
+
+    function resetGame(){
+        setGrid(startingGrid)
+        setGameIsOver(false)
+        setRowNumber(0)
+        setBoxNumber(0)
+        setErrorMessage("")
+    }
             
         
     return (
@@ -100,6 +111,9 @@ const Game: React.FC<IGameProps> = ({wordArray, setGameOver, gameIsOver}) => {
                 ))}</div>
                 ))}
                 <h2>{errorMessage && errorMessage}</h2>
+
+                {gameIsOver && <button onClick={resetGame}>Start Again</button>}
+
                 <Keyboard handleLetterClick={keyboardProps.handleLetterClick}/>
 
         </>
