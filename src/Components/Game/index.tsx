@@ -26,6 +26,7 @@ const Game: React.FC<IGameProps> = ({wordArray}) => {
                 setGrid(temporaryGrid) //update grid state
                 let newRowNum = rowNumber+1
                 setRowNumber(newRowNum)
+                setBoxNumber(0)
              } else {
               setErrorMessage("invalid Word")
              }
@@ -41,27 +42,29 @@ const Game: React.FC<IGameProps> = ({wordArray}) => {
 
  
     }
+    
+    const startingGrid = [{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]}]
 
-    console.log(wordArray)
-
-        const startingGrid = [{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]}]
-
-      const [grid, setGrid] = useState(startingGrid)
+    const [grid, setGrid] = useState(startingGrid)
+    const [rowNumber, setRowNumber] = useState(0)
+    const [boxNumber, setBoxNumber] = useState(0)
+    const [errorMessage, setErrorMessage] = useState("")
       
-      const [rowNumber, setRowNumber] = useState(0)
-      const [boxNumber, setBoxNumber] = useState(0)
-      const [errorMessage, setErrorMessage] = useState("")
-      
-      
-
-      let keyboardProps:IKeyboardProps = {
+    let keyboardProps:IKeyboardProps = {
 
         handleLetterClick:(letter)=>{
 
+            const temporaryGrid = JSON.parse(JSON.stringify(grid)); //creates copy of grid to update
             if (letter==='enter'){
                 handleEnterClick()
-            } else {console.log(boxNumber)
-            const temporaryGrid = JSON.parse(JSON.stringify(grid)); //creates copy of grid to update
+            } else if (letter ==='<'){
+               
+                temporaryGrid[rowNumber].rowArray.splice(boxNumber-1, 1, {letter:"", color:"grey"})
+                
+                setGrid(temporaryGrid)
+                setBoxNumber(boxNumber-1)
+            } else {
+                
             
             temporaryGrid[rowNumber].rowArray.splice(boxNumber, 1, {letter:letter, color:"grey"}) //in the new array replace the changed value to include the letter & change color to grey   
             console.log(temporaryGrid)
@@ -86,10 +89,11 @@ const Game: React.FC<IGameProps> = ({wordArray}) => {
             setGrid(temporaryGrid)
             
 
-            let newBoxNum = boxNumber===4? 0 : boxNumber+1 
-
+            let newBoxNum =  boxNumber+1 
             setBoxNumber(newBoxNum)
-        }}
+        }
+    
+    }
 
             
     }
