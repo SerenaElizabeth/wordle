@@ -22,7 +22,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-
+      <header>Wordle</header>
       <Game wordArray={gameProps.wordArray} />
 
 
