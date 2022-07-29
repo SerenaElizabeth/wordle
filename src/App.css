@@ -1,3 +1,9 @@
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 .App {
   text-align: center;
   display: flex;
@@ -11,22 +17,41 @@
 
 .box {
   background-color: #fff;
-  height: 30px;
-  width: 30px;
+  height: 100%;
+  width: 100%;
   margin: 5px;
   border: 2px solid #d3d6da;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  line-height: 2rem;
+  font-weight: bold;
+  vertical-align: middle;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.yellow{
-  background-color: yellow;
+.box.filled.yellow{
+  color: white;
+  background-color: #C9B458;
+  border: 2px solid #C9B458;
 }
 
-.green{
-  background-color: green;
+.box.filled.green{
+  background-color: #6aaa64;
+  border: 2px solid #6aaa64;
+  color: white;
 }
 
-.grey{
-  background-color: grey;
+.box.filled.grey{
+  background-color: #787c7e;
+  border: 2px solid #787c7e;
+  color: white;
 }
 
 .box.filled{
@@ -51,6 +76,11 @@ header{
 
 .game {
   height: calc(100% - 65px);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .row {
@@ -65,4 +95,25 @@ header{
   grid-gap: 5px;
   padding: 10px;
   box-sizing: border-box;
+  width: 350px;
+    height: 420px;
+}
+
+.board-wrapper{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.popout {
+  animation: popout 1s ease;
+  -webkit-animation: popout 1s ease;
+  
+}
+@keyframes popout {
+  from{transform:scale(0)}
+  80%{transform:scale(1.2)}
+  to{transform:scale(1)}
 }

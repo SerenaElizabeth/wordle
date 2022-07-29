@@ -10,12 +10,43 @@ export interface IKeyboardProps {
 const Game: React.FC<IGameProps> = ({wordArray}) => {
     
     const [gameIsOver, setGameIsOver] = useState(false)
-    const startingGrid = [{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]},{completed:false, rowArray:[{letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}, {letter:"", color:"blue"}]}]
+    const startingGrid = generateGrid()
     const [grid, setGrid] = useState(startingGrid)
     const [rowNumber, setRowNumber] = useState(0)
     const [boxNumber, setBoxNumber] = useState(0)
     const [errorMessage, setErrorMessage] = useState("")
-      
+
+   
+
+    function generateRow() {
+        let newRowArray:{letter:string, color:string, active:boolean}[]=[]
+       for(let i = 0; i < 5; i++) {
+        let newCell = generateCell()
+            newRowArray.push(newCell)
+        }
+        return {
+            completed:false, 
+            rowArray:newRowArray
+        }
+    }
+
+    function generateGrid(){
+        let newGridArray:{completed:Boolean, rowArray:{letter:string, color:string, active:boolean}[]}[]=[]
+        for(let i = 0; i < 6; i++) {
+            newGridArray.push(generateRow())
+        }
+        return newGridArray
+    }
+
+    function generateCell() {
+        return {
+            letter: "",
+            color: "blue", 
+            active:false
+        }
+    }
+
+
 
     async function handleEnterClick(){
         //create array from guessed word
@@ -66,24 +97,30 @@ const Game: React.FC<IGameProps> = ({wordArray}) => {
             } else if (letter ==='<' ){
                //check that first letter is not empty 
                 if (grid[rowNumber].rowArray[0].letter!==''){
-                temporaryGrid[rowNumber].rowArray.splice(boxNumber-1, 1, {letter:"", color:"grey"})
+                temporaryGrid[rowNumber].rowArray.splice(boxNumber-1, 1, {letter:"", color:"grey", active:false})
                 setGrid(temporaryGrid)
                 setBoxNumber(boxNumber-1)
                 }
             } else {
-            temporaryGrid[rowNumber].rowArray.splice(boxNumber, 1, {letter:letter, color:"grey"}) //in the new array replace the changed value to include the letter & change color to grey   
+            temporaryGrid[rowNumber].rowArray.splice(boxNumber, 1, {letter:letter, color:"grey", active:true}) //in the new array replace the changed value to include the letter & change color to grey   
+
+
+            
+            
             console.log(temporaryGrid)
             if (temporaryGrid[rowNumber].rowArray[boxNumber].letter === wordArray[boxNumber]) {
-                temporaryGrid[rowNumber].rowArray.splice(boxNumber, 1, {letter:letter, color:"green"}) 
+                temporaryGrid[rowNumber].rowArray.splice(boxNumber, 1, {letter:letter, color:"green", active:true}) 
             } else if (wordArray.filter(i => i === letter).length>0) {
-                temporaryGrid[rowNumber].rowArray.splice(boxNumber, 1, {letter:letter, color:"yellow"}) 
+                temporaryGrid[rowNumber].rowArray.splice(boxNumber, 1, {letter:letter, color:"yellow", active:true}) 
             }
-                setGrid(temporaryGrid)
-                let newBoxNum =  boxNumber+1 
-                setBoxNumber(newBoxNum)
-            }
+            setGrid(temporaryGrid)
+
+            let newBoxNum =  boxNumber+1 
+            setBoxNumber(newBoxNum)
+
         }
     }
+}
 
     function resetGame(){
         setGrid(startingGrid)
@@ -95,18 +132,22 @@ const Game: React.FC<IGameProps> = ({wordArray}) => {
             
     return (
         <div className='game'>
-            <div className='board'>
-            {grid.map((row, rowIndex) => (
+            <div className='board-wrapper'>
+                <div className='board'>
+                    {grid.map((row, rowIndex) => (
                 <div key={rowIndex} className="row">{row.rowArray.map((box, boxIndex) => (
-                    <input data-row={rowIndex} data-box={boxIndex} key={boxIndex}  className={`${row.completed?"box " + box.color:"box"} ${box.letter!==''? "filled":""}`} type="text" value={box.letter}/>
+                    <input data-row={rowIndex} data-box={boxIndex} key={boxIndex}  className={`${row.completed?"box " + box.color:"box"} ${box.letter!==''? "filled":""} ${box.active? "popout": ""}`} type="text" value={box.letter}/>
                 ))}</div>
                 ))}
+                </div>
             </div>
                 <h2>{errorMessage && errorMessage}</h2>
 
                 {gameIsOver && <button onClick={resetGame}>Start Again</button>}
 
                 {!gameIsOver && <Keyboard handleLetterClick={keyboardProps.handleLetterClick}/>}
+
+
         </div>
     )
 }
